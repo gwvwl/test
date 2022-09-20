@@ -21,7 +21,11 @@ export const addEmployeeList = createAsyncThunk(
   "employeeSlice/addEmployeeList",
   async (offset, { rejectWithValue, dispatch }) => {
     try {
-      getEmployee(offset).then((res) => dispatch(addEmployee(res.users)));
+      getEmployee(offset).then((res) => {
+        const data = res.users;
+        if (data.length < 6) dispatch(setShow(false));
+        dispatch(addEmployee(data));
+      });
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -57,7 +61,7 @@ const employeeSlice = createSlice({
   name: "employee",
   initialState: {
     employee: [],
-    offset: 0,
+    show: true,
     status: null,
     error: null,
   },
@@ -65,13 +69,16 @@ const employeeSlice = createSlice({
     ListEmployee(state, { payload }) {
       state.employee = [...payload];
     },
-    addEmployee(state, action) {
-      state.employee = [...state.employee, ...action.payload];
+    addEmployee(state, { payload }) {
+      state.employee = [...state.employee, ...payload];
+    },
+    setShow(state, { payload }) {
+      state.show = payload;
     },
   },
   extraReducers: {},
 });
 
-export const { ListEmployee, addEmployee } = employeeSlice.actions;
+export const { ListEmployee, addEmployee, setShow } = employeeSlice.actions;
 
 export default employeeSlice.reducer;

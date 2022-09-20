@@ -9,7 +9,8 @@ import {
 
 const Main = () => {
   const dispatch = useDispatch();
-  const { employee } = useSelector((state) => state.employee);
+  const employee = useSelector((state) => state.employee.employee);
+  const show = useSelector((state) => state.employee.show);
   const offset = employee.length;
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const Main = () => {
           );
         })}
       </div>
-      {offset % 6 === 0 && (
+      {show && (
         <button
           className="form__submit buttonAndLink"
           onClick={() => dispatch(addEmployeeList(offset))}
